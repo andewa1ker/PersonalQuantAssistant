@@ -21,19 +21,10 @@ from utils.cache_helper import (
     preload_common_data
 )
 
-# 导入Premium UI组件
-from styles_premium import inject_premium_styles, DESIGN_TOKENS, create_divider
-from components_premium import (
-    render_balance_card,
-    render_profit_chart,
-    render_transaction_list,
-    render_kpi_card,
-    render_donut_chart,
-    render_signal_table,
-    render_upcoming_card,
-    show_toast,
-)
-from icons import icon, icon_html, get_icon_group
+# 导入新设计系统
+from design_system import inject_css, TOKENS
+from ds_icons import icon
+from ds_components import section_header, kpi_card
 
 # 导入AI助手
 from ai.ai_assistant import AIAssistant, init_ai_assistant, show_ai_chat_interface
@@ -118,8 +109,8 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 应用Premium深色金融样式
-inject_premium_styles()
+# 应用新设计系统样式
+inject_css()
 
 
 def load_app_config():
