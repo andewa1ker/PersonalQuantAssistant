@@ -2,6 +2,7 @@
 streamlit>=1.29.0
 pandas>=2.0.0
 numpy>=1.24.0
+streamlit-lottie>=0.0.5         # Lottie动画支持
 
 # ===== AI功能 =====
 openai>=1.0.0                   # OpenAI API

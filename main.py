@@ -1,6 +1,6 @@
 """
 PersonalQuantAssistant - 个人AI量化金融分析师
-主程序入口 - Streamlit Web应用 (现代化UI版本)
+主程序入口 - Streamlit Web应用 (Premium深色金融风格)
 """
 import streamlit as st
 import sys
@@ -20,16 +20,34 @@ from utils.cache_helper import (
     show_performance_metrics,
     preload_common_data
 )
-# 导入现代化UI组件
-from ui.modern_theme import ModernTheme
-from ui.modern_components import ModernComponents
+
+# 导入Premium UI组件
+from styles_premium import inject_premium_styles, DESIGN_TOKENS, create_divider
+from components_premium import (
+    render_balance_card,
+    render_profit_chart,
+    render_transaction_list,
+    render_kpi_card,
+    render_donut_chart,
+    render_signal_table,
+    render_upcoming_card,
+    show_toast,
+)
+from icons import icon, icon_html, get_icon_group
 
 # 导入AI助手
 from ai.ai_assistant import AIAssistant, init_ai_assistant, show_ai_chat_interface
 
 import pandas as pd
 import plotly.graph_objects as go
-# from utils.logger import setup_logger
+
+# Lottie动画支持（可选）
+try:
+    from streamlit_lottie import st_lottie
+    import requests
+    HAS_LOTTIE = True
+except ImportError:
+    HAS_LOTTIE = False
 
 # ==================== 数据缓存系统 ====================
 
@@ -95,13 +113,13 @@ def get_cached_signals(signal_gen, data_manager, assets):
 # 页面配置
 st.set_page_config(
     page_title="Personal Quant Assistant",
-    page_icon="✨",
+    page_icon="💰",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# 应用现代化主题
-ModernTheme.apply_theme()
+# 应用Premium深色金融样式
+inject_premium_styles()
 
 
 def load_app_config():
@@ -113,6 +131,126 @@ def load_app_config():
     except Exception as e:
         st.error(f"配置加载失败: {str(e)}")
         st.stop()
+
+
+# ==================== Premium Dashboard ====================
+def show_premium_dashboard(data_manager, signal_gen, config):
+    """显示Premium深色金融风格Dashboard"""
+    
+    # 顶部工具栏
+    col1, col2, col3, col4 = st.columns([2, 2, 1, 1])
+    with col1:
+        st.markdown(f"""
+        <div style="font-size: 2rem; font-weight: 700; background: linear-gradient(135deg, #FF6A00, #FFA54C); 
+        -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            {icon('home', 28, DESIGN_TOKENS['primary_solid'])} 投资仪表板
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown(f"<div style='color: {DESIGN_TOKENS['text_tertiary']}; margin-top: 0.5rem;'>欢迎回来！</div>", unsafe_allow_html=True)
+    with col3:
+        if st.button(f"{icon_html('calendar', 16)} 日期范围"):
+            pass
+    with col4:
+        if st.button(f"{icon_html('refresh', 16)} 刷新"):
+            st.cache_resource.clear()
+            st.rerun()
+    
+    create_divider()
+    
+    # 演示数据（请替换为真实数据）
+    user = {"name": "Ghulam"}
+    balance = {"total": 27802.05, "change_pct": 0.15, "change_amount": 412.50}
+    chart_data = {
+        "dates": ["2024-05-01", "2024-06-01", "2024-07-01", "2024-08-01", "2024-09-01"],
+        "values": [12000, 15000, 17000, 21000, 27802]
+    }
+    transactions = [
+        {"title": "工资收入", "tag": "月薪", "amount": 2010, "time": "今天 14:02", "icon": "wallet"},
+        {"title": "投资收益", "tag": "ETF分红", "amount": 12010, "time": "昨天", "icon": "trending_up"},
+        {"title": "生活支出", "tag": "日常", "amount": -322, "time": "2天前", "icon": "credit_card"},
+    ]
+    upcoming = [
+        {"name": "域名续费", "amount": 120},
+        {"name": "旅行预算", "amount": 2500}
+    ]
+    stats = {"saving_rate": 0.75, "win_rate": 0.62, "sharpe": 1.42, "mdd": -0.18}
+    
+    # 第一行：账户总览 + 收益曲线
+    col1, col2 = st.columns([1, 2])
+    
+    with col1:
+        render_balance_card(balance, user)
+        st.markdown('<div style="height: 1.5rem;"></div>', unsafe_allow_html=True)
+        
+        # Upcoming待办
+        render_upcoming_card(upcoming)
+    
+    with col2:
+        render_profit_chart(chart_data, "收益走势")
+        
+        # 时间段选择器（可选）
+        # period = render_time_period_selector()
+    
+    st.markdown('<div style="height: 2rem;"></div>', unsafe_allow_html=True)
+    
+    # 第二行：KPI统计卡
+    st.markdown(f"""
+    <h3 style="margin: 0 0 1.5rem 0; font-size: 1.2rem;">
+        {icon('bar_chart', 20, DESIGN_TOKENS['primary_solid'])}
+        <span style="margin-left: 0.5rem;">统计概览</span>
+    </h3>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        render_kpi_card("储蓄率", f"{stats['saving_rate']*100:.0f}%", "+5%", "wallet")
+    with col2:
+        render_kpi_card("胜率", f"{stats['win_rate']*100:.0f}%", "+3%", "target")
+    with col3:
+        render_kpi_card("夏普比率", f"{stats['sharpe']:.2f}", "+0.12", "trending_up")
+    with col4:
+        render_kpi_card("最大回撤", f"{abs(stats['mdd'])*100:.1f}%", "-2%", "trending_down")
+    
+    st.markdown('<div style="height: 2rem;"></div>', unsafe_allow_html=True)
+    
+    # 第三行：最近交易 + 策略信号
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        render_transaction_list(transactions, "最近交易")
+    
+    with col2:
+        # 策略信号示例
+        signal_df = pd.DataFrame([
+            {"资产": "BTC", "信号": "买入", "价格": "¥65,432", "时间": "10:30"},
+            {"资产": "ETH", "信号": "持有", "价格": "¥3,245", "时间": "09:15"},
+            {"资产": "513500", "信号": "卖出", "价格": "¥3.12", "时间": "昨天"},
+        ])
+        render_signal_table(signal_df)
+    
+    st.markdown('<div style="height: 2rem;"></div>', unsafe_allow_html=True)
+    
+    # 第四行：环形统计图
+    st.markdown(f"""
+    <h3 style="margin: 0 0 1.5rem 0; font-size: 1.2rem;">
+        {icon('pie_chart', 20, DESIGN_TOKENS['primary_solid'])}
+        <span style="margin-left: 0.5rem;">分析指标</span>
+    </h3>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        render_donut_chart(stats['saving_rate'], "储蓄率", DESIGN_TOKENS['primary_solid'])
+    with col2:
+        render_donut_chart(stats['win_rate'], "胜率", DESIGN_TOKENS['success'])
+    with col3:
+        render_donut_chart(abs(stats['mdd']), "风险利用", DESIGN_TOKENS['warning'])
+    
+    # 显示Toast通知（可选）
+    # show_toast("已同步最新交易", "success")
 
 
 def main():
@@ -131,95 +269,72 @@ def main():
     # 预加载常用数据(后台静默加载)
     preload_common_data(data_manager)
     
-    # 侧边栏导航 - 使用简约图标
-    from ui.minimal_icons import MinimalIcons
+    # 侧边栏Logo和导航
+    st.sidebar.markdown(f"""
+    <div style="text-align: center; padding: 2rem 1rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">
+            {icon('wallet', 48, DESIGN_TOKENS['primary_solid'])}
+        </div>
+        <h2 style="margin: 0; background: linear-gradient(135deg, #FF6A00, #FFA54C); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+            量化助手
+        </h2>
+        <p style="margin: 0.5rem 0 0; color: {DESIGN_TOKENS['text_tertiary']}; font-size: 0.85rem;">
+            Personal Quant Assistant
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    st.sidebar.title(f"{MinimalIcons.get('menu')} 导航菜单")
+    # 导航菜单
+    nav_items = [
+        ('home', '首页 Dashboard'),
+        ('line_chart', '策略信号'),
+        ('activity', '回测分析'),
+        ('shield_check', '风险监控'),
+        ('layers', '交易记录'),
+        ('bar_chart', '统计分析'),
+        ('settings', '系统设置'),
+    ]
+    
+    st.sidebar.markdown('<div style="margin: 1rem 0;">', unsafe_allow_html=True)
+    
     page = st.sidebar.radio(
-        "选择功能模块",
-        [
-            f"{MinimalIcons.get('dashboard')} 投资仪表板",
-            f"{MinimalIcons.get('ai')} AI投资顾问",
-            f"🤖 AI智能预测",
-            f"💬 情感分析",
-            f"{MinimalIcons.get('grid')} 总览面板",
-            f"{MinimalIcons.get('search')} 品种分析",
-            f"{MinimalIcons.get('signal')} 策略信号",
-            f"{MinimalIcons.get('money')} 投资策略",
-            f"{MinimalIcons.get('warning')} 风险管理",
-            f"{MinimalIcons.get('database')} 数据导出",
-            f"{MinimalIcons.get('settings')} 系统设置",
-            f"{MinimalIcons.get('server')} 数据源管理",
-        ],
+        "导航",
+        [f"{icon_html(ic, 18)} {label}" for ic, label in nav_items],
         label_visibility="collapsed"
     )
+    st.sidebar.markdown('</div>', unsafe_allow_html=True)
     
     # 显示缓存管理工具
-    show_cache_manager()
-    show_performance_metrics()
+    with st.sidebar.expander(f"{icon_html('settings', 16)} 系统工具"):
+        show_cache_manager()
+        show_performance_metrics()
     
     # 显示版本信息
     st.sidebar.markdown("---")
     st.sidebar.caption(f"版本: {config.app_version}")
     st.sidebar.caption("© 2025 Personal Quant Assistant")
     
-    # 根据选择显示不同页面(匹配新图标)
-    if MinimalIcons.get('dashboard') in page or "投资仪表板" in page:
-        # Apple级别仪表板
-        from dashboard_apple import show_apple_dashboard
-        show_apple_dashboard(data_manager, signal_gen)
-    elif MinimalIcons.get('ai') in page or "AI投资顾问" in page:
-        # 初始化AI助手
-        ai_assistant = init_ai_assistant(config.deepseek_api_key)
-        if ai_assistant:
-            # 获取当前市场数据作为上下文
-            context = {
-                'crypto_data': get_cached_market_data(data_manager),
-                'timestamp': datetime.now().isoformat()
-            }
-            show_ai_chat_interface(ai_assistant, context)
-        else:
-            st.error("⚠️ AI助手未配置")
-            st.info("""
-            **配置步骤：**
-            1. 获取DeepSeek API Key: https://platform.deepseek.com
-            2. 在 `config/api_keys.yaml` 中配置：
-               ```yaml
-               deepseek:
-                 api_key: "your_api_key_here"
-               ```
-            3. 重启应用
-            """)
-    elif "AI智能预测" in page:
-        from src.ui.ai_prediction_page import show_ai_prediction_page
-        show_ai_prediction_page()
-    elif "情感分析" in page:
-        from src.ui.sentiment_page import show_sentiment_page
-        show_sentiment_page()
-    elif "总览面板" in page:
-        from overview_enhanced import show_overview_enhanced
-        show_overview_enhanced(config, data_manager)
-    elif "品种分析" in page:
-        from analysis_enhanced import show_analysis_enhanced
-        show_analysis_enhanced(config, data_manager)
+    # 根据选择显示不同页面
+    if "首页" in page or "Dashboard" in page:
+        show_premium_dashboard(data_manager, signal_gen, config)
     elif "策略信号" in page:
         from signals_enhanced import show_signals_enhanced
         show_signals_enhanced(config, data_manager, signal_gen)
-    elif "投资策略" in page:
+    elif "回测分析" in page:
         from strategy_page import show_strategy_page
         show_strategy_page(config)
-    elif "风险管理" in page:
+    elif "风险监控" in page:
         from risk_enhanced import show_risk_enhanced
         show_risk_enhanced(data_manager, config)
-    elif "数据导出" in page:
+    elif "交易记录" in page:
         from export_module import show_export_functions
         show_export_functions(data_manager, config)
+    elif "统计分析" in page:
+        from analysis_enhanced import show_analysis_enhanced
+        show_analysis_enhanced(config, data_manager)
     elif "系统设置" in page:
         from settings_enhanced import show_settings_enhanced
         show_settings_enhanced(config)
-    elif "数据源管理" in page:
-        from datasource_manager import show_datasource_manager
-        show_datasource_manager()
 
 
 def show_overview_page(config):
