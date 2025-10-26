@@ -1,64 +1,125 @@
-"""
-PersonalQuantAssistant - 个人AI量化金融分析师
-主程序入口 - Streamlit Web应用 (Premium深色金融风格)
-"""
-import streamlit as st
-import sys
+""""""
+
+PersonalQuantAssistant - 主程序入口PersonalQuantAssistant - 个人AI量化金融分析师
+
+"""主程序入口 - Streamlit Web应用 (Premium深色金融风格)
+
+import streamlit as st"""
+
+import sysimport streamlit as st
+
+from pathlib import Pathimport sys
+
 from pathlib import Path
-from datetime import datetime, timedelta
 
-# 添加src目录到Python路径
+# 添加src目录到Python路径from datetime import datetime, timedelta
+
 src_path = Path(__file__).parent / "src"
-sys.path.insert(0, str(src_path))
 
-from utils.config_loader import get_config
+sys.path.insert(0, str(src_path))# 添加src目录到Python路径
+
+src_path = Path(__file__).parent / "src"
+
+from utils.config_loader import get_configsys.path.insert(0, str(src_path))
+
 from data_fetcher.data_manager import DataManager
-from analysis.signal_generator import SignalGenerator
-from utils.cache_helper import (
-    init_session_state, 
-    show_cache_manager, 
-    show_performance_metrics,
-    preload_common_data
-)
 
-# 导入新设计系统
-from design_system import inject_css, TOKENS
-from ds_icons import icon
+from analysis.signal_generator import SignalGeneratorfrom utils.config_loader import get_config
+
+from utils.cache_helper import init_session_statefrom data_fetcher.data_manager import DataManager
+
+from analysis.signal_generator import SignalGenerator
+
+# 导入设计系统from utils.cache_helper import (
+
+from design_system import inject_css    init_session_state, 
+
+    show_cache_manager, 
+
+# 页面配置    show_performance_metrics,
+
+st.set_page_config(    preload_common_data
+
+    page_title="Personal Quant Assistant",)
+
+    page_icon="💰",
+
+    layout="wide",# 导入新设计系统
+
+    initial_sidebar_state="expanded",from design_system import inject_css, TOKENS
+
+)from ds_icons import icon
+
 from ds_components import section_header, kpi_card
 
-# 导入AI助手
+# 应用样式
+
+inject_css()# 导入AI助手
+
 from ai.ai_assistant import AIAssistant, init_ai_assistant, show_ai_chat_interface
 
-import pandas as pd
-import plotly.graph_objects as go
-
-# Lottie动画支持（可选）
-try:
-    from streamlit_lottie import st_lottie
-    import requests
-    HAS_LOTTIE = True
-except ImportError:
-    HAS_LOTTIE = False
-
-# ==================== 数据缓存系统 ====================
-
 @st.cache_resource
-def init_signal_generator():
-    """初始化信号生成器（缓存）"""
+
+def init_signal_generator():import pandas as pd
+
+    """初始化信号生成器（缓存）"""import plotly.graph_objects as go
+
     return SignalGenerator()
 
-@st.cache_resource
-def init_data_manager():
-    """初始化数据管理器（缓存）"""
-    return DataManager()
+# Lottie动画支持（可选）
 
-@st.cache_data(ttl=300)  # 缓存5分钟
-def get_cached_realtime_data(data_manager, asset_type, asset_code):
-    """缓存实时数据获取"""
-    try:
+@st.cache_resourcetry:
+
+def init_data_manager():    from streamlit_lottie import st_lottie
+
+    """初始化数据管理器（缓存）"""    import requests
+
+    return DataManager()    HAS_LOTTIE = True
+
+except ImportError:
+
+def load_app_config():    HAS_LOTTIE = False
+
+    """加载应用配置"""
+
+    try:# ==================== 数据缓存系统 ====================
+
+        config = get_config()
+
+        return config@st.cache_resource
+
+    except Exception as e:def init_signal_generator():
+
+        st.error(f"配置加载失败: {str(e)}")    """初始化信号生成器（缓存）"""
+
+        st.stop()    return SignalGenerator()
+
+
+
+def main():@st.cache_resource
+
+    """主函数"""def init_data_manager():
+
+    init_session_state()    """初始化数据管理器（缓存）"""
+
+    config = load_app_config()    return DataManager()
+
+    
+
+    st.info("💡 请使用左侧菜单导航到各功能模块")@st.cache_data(ttl=300)  # 缓存5分钟
+
+    st.markdown("---")def get_cached_realtime_data(data_manager, asset_type, asset_code):
+
+    st.caption(f"版本: {config.app_version}")    """缓存实时数据获取"""
+
+    st.caption("© 2025 Personal Quant Assistant")    try:
+
         return data_manager.get_asset_data(asset_type, asset_code, 'realtime')
-    except:
-        return None
+
+if __name__ == "__main__":    except:
+
+    main()        return None
+
 
 @st.cache_data(ttl=1800)  # 缓存30分钟
 def get_cached_history_data(data_manager, asset_type, asset_code, period='1y'):
