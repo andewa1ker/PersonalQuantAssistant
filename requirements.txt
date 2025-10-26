@@ -3,6 +3,9 @@ streamlit>=1.29.0
 pandas>=2.0.0
 numpy>=1.24.0
 
+# ===== AI功能 =====
+openai>=1.0.0                   # OpenAI API
+
 # ===== 数据获取 =====
 yfinance>=0.2.32                # 美股和全球市场数据
 akshare>=1.11.0                 # A股、ETF数据（免费）
