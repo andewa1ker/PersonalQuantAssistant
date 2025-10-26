@@ -1,71 +1,72 @@
 # ===== 核心框架 =====
-streamlit==1.29.0
-pandas==2.1.4
-numpy==1.26.2
+streamlit>=1.29.0
+pandas>=2.0.0,<2.2.0
+numpy>=1.24.0,<2.0.0
 
 # ===== 数据获取 =====
-yfinance==0.2.32                # 美股和全球市场数据
-akshare==1.11.79                # A股、ETF数据（免费）
+yfinance>=0.2.32                # 美股和全球市场数据
+akshare>=1.11.0                 # A股、ETF数据（免费）
 # tushare==1.4.4                # 备选A股数据源（需Pro账户）
-requests==2.31.0                # HTTP请求
-pycoingecko==3.1.0             # 加密货币数据
+requests>=2.31.0                # HTTP请求
+pycoingecko>=3.1.0              # 加密货币数据
 
 # ===== 技术分析 =====
-ta-lib==0.4.28                  # 技术指标库（需单独安装C库）
-pandas-ta==0.3.14b              # 纯Python技术指标（ta-lib的替代）
-mplfinance==0.12.10b0          # K线图绘制
+# ta-lib==0.4.28                  # 技术指标库（需单独安装C库，云端不可用）
+pandas-ta>=0.3.14b              # 纯Python技术指标（ta-lib的替代）
+mplfinance>=0.12.10b0          # K线图绘制
 
 # ===== 数据处理和计算 =====
-scipy==1.11.4                   # 科学计算
-statsmodels==0.14.1            # 统计模型
+scipy>=1.11.0                   # 科学计算
+statsmodels>=0.14.0            # 统计模型
 
 # ===== 可视化 =====
-plotly==5.18.0                  # 交互式图表
-matplotlib==3.8.2               # 基础绘图
-seaborn==0.13.0                # 统计图表
+plotly>=5.18.0                  # 交互式图表
+matplotlib>=3.8.0               # 基础绘图
+seaborn>=0.13.0                # 统计图表
 
 # ===== 数据库 =====
-sqlalchemy==2.0.23             # ORM框架
-sqlite3                         # 轻量级数据库（Python自带）
+sqlalchemy>=2.0.0              # ORM框架
+# sqlite3                         # 轻量级数据库（Python自带）
 
 # ===== 配置管理 =====
-pyyaml==6.0.1                  # YAML配置文件
-pydantic==2.5.2                # 数据验证
-python-dotenv==1.0.0           # 环境变量管理
+pyyaml>=6.0.0                  # YAML配置文件
+pydantic>=2.5.0                # 数据验证
+python-dotenv>=1.0.0           # 环境变量管理
 
 # ===== 任务调度 =====
-apscheduler==3.10.4            # 定时任务
-schedule==1.2.0                # 简单定时任务
+apscheduler>=3.10.0            # 定时任务
+schedule>=1.2.0                # 简单定时任务
 
 # ===== 日志和监控 =====
-loguru==0.7.2                  # 更好用的日志库
+loguru>=0.7.0                  # 更好用的日志库
 
 # ===== 缓存 =====
-diskcache==5.6.3               # 磁盘缓存
-redis==5.0.1                   # Redis缓存（可选）
+diskcache>=5.6.0               # 磁盘缓存
+# redis>=5.0.0                   # Redis缓存（云端不需要）
 
 # ===== 消息通知（可选） =====
 # python-telegram-bot==20.7    # Telegram机器人
 # itchat==1.3.10               # 微信机器人（不稳定）
 
 # ===== 机器学习（可选扩展） =====
-# scikit-learn==1.3.2          # 机器学习
+scikit-learn>=1.3.0            # 机器学习
+joblib>=1.3.0                  # 模型序列化
 # lightgbm==4.1.0              # 轻量级梯度提升
 
 # ===== 回测框架（可选） =====
 # backtrader==1.9.78.123       # 回测引擎
 # vectorbt==0.25.0             # 向量化回测
 
-# ===== 开发工具 =====
-pytest==7.4.3                  # 单元测试
-pytest-cov==4.1.0              # 测试覆盖率
-black==23.12.1                 # 代码格式化
-flake8==6.1.0                  # 代码检查
-ipython==8.19.0                # 交互式Python
+# ===== 开发工具（云端不需要） =====
+# pytest==7.4.3                  # 单元测试
+# pytest-cov==4.1.0              # 测试覆盖率
+# black==23.12.1                 # 代码格式化
+# flake8==6.1.0                  # 代码检查
+# ipython==8.19.0                # 交互式Python
 
 # ===== 时间处理 =====
-python-dateutil==2.8.2
-pytz==2023.3.post1
+python-dateutil>=2.8.0
+pytz>=2023.3
 
 # ===== 数据验证和处理 =====
-jsonschema==4.20.0
+jsonschema>=4.20.0
