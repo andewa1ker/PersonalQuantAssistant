@@ -1,0 +1,298 @@
+# =====================================================
+# PersonalQuantAssistant - 主配置文件
+# =====================================================
+
+# ==================== 应用配置 ====================
+app:
+  name: "Personal Quant Assistant"
+  version: "1.0.0"
+  timezone: "Asia/Shanghai"
+  log_level: "INFO"  # DEBUG, INFO, WARNING, ERROR
+  cache_ttl: 3600    # 缓存有效期（秒）
+  
+  # 数据获取配置
+  data_fetch:
+    retry_times: 3           # API失败重试次数
+    retry_delay: 1           # 重试延迟(秒)
+    use_mock_on_fail: true   # API失败时使用模拟数据
+    use_cached_on_fail: true # API失败时使用过期缓存
+
+# ==================== 投资品种配置 ====================
+assets:
+  # 513500 - 标普500 ETF
+  etf_513500:
+    enabled: true
+    symbol: "513500.SH"
+    name: "标普500ETF"
+    data_source: "akshare"  # akshare, tushare
+    update_frequency: 3600   # 更新频率（秒）
+    position_limit: 0.5      # 最大仓位占比
+    
+  # 加密货币
+  crypto:
+    enabled: true
+    symbols:
+      - "bitcoin"
+      - "ethereum"
+      - "binancecoin"
+    data_source: "coingecko"  # coingecko, binance
+    update_frequency: 300      # 更新频率（秒，5分钟）
+    position_limit: 0.3        # 最大仓位占比
+    
+  # 美股（预留）
+  us_stocks:
+    enabled: false
+    symbols:
+      - "AAPL"
+      - "TSLA"
+      - "NVDA"
+    data_source: "yfinance"
+    update_frequency: 3600
+    position_limit: 0.2
+
+# ==================== 数据获取配置 ====================
+data:
+  # 历史数据配置
+  history:
+    default_period: "1y"      # 默认获取周期：1d, 1w, 1mo, 1y
+    default_interval: "1d"    # 默认时间间隔：1m, 5m, 1h, 1d
+    
+  # 缓存配置
+  cache:
+    enabled: true
+    path: "./data/cache"
+    size_limit: "1GB"         # 缓存大小限制
+    
+  # 数据库配置
+  database:
+    type: "sqlite"            # sqlite, postgresql
+    path: "./data/quant.db"
+    backup_enabled: true
+    backup_interval: 86400    # 备份间隔（秒，24小时）
+
+# ==================== 技术分析配置 ====================
+technical_analysis:
+  # 趋势指标
+  trend:
+    ma_periods: [5, 10, 20, 60, 120, 250]
+    ema_periods: [12, 26, 50, 200]
+    macd:
+      fast_period: 12
+      slow_period: 26
+      signal_period: 9
+      
+  # 动量指标
+  momentum:
+    rsi_period: 14
+    rsi_overbought: 70
+    rsi_oversold: 30
+    stoch_period: 14
+    cci_period: 20
+    
+  # 波动率指标
+  volatility:
+    bb_period: 20
+    bb_std: 2
+    atr_period: 14
+    
+  # 成交量指标
+  volume:
+    obv_enabled: true
+    volume_ma_periods: [5, 10, 20]
+
+# ==================== 策略配置 ====================
+strategy:
+  # 513500 ETF策略
+  etf_513500:
+    # 估值策略
+    valuation:
+      enabled: true
+      pe_low_percentile: 20    # PE历史分位数低点
+      pe_high_percentile: 80   # PE历史分位数高点
+      pb_low_percentile: 20
+      pb_high_percentile: 80
+      
+    # 趋势策略
+    trend_following:
+      enabled: true
+      ma_short: 20             # 短期均线
+      ma_long: 60              # 长期均线
+      use_macd: true
+      
+    # 定投策略
+    dca:
+      enabled: true
+      base_amount: 1000        # 基础定投金额
+      frequency: "weekly"      # daily, weekly, monthly
+      volatility_adjust: true  # 基于波动率调整金额
+      
+  # 加密货币策略
+  crypto:
+    # 恐惧贪婪指数策略
+    fear_greed:
+      enabled: true
+      fear_threshold: 25       # 恐惧阈值（买入）
+      greed_threshold: 75      # 贪婪阈值（卖出）
+      
+    # 动量策略
+    momentum:
+      enabled: true
+      lookback_period: 30
+      rsi_strategy: true
+      
+    # 网格交易（可选）
+    grid_trading:
+      enabled: false
+      grid_count: 10
+      price_range_pct: 0.2    # 价格范围百分比
+      
+  # 通用策略
+  general:
+    # 资产配置
+    rebalance:
+      enabled: true
+      frequency: "monthly"     # weekly, monthly, quarterly
+      threshold: 0.05          # 偏离阈值触发再平衡
+      target_allocation:
+        etf_513500: 0.50       # 50%
+        crypto: 0.30           # 30%
+        cash: 0.20             # 20%
+        
+    # 止损止盈
+    stop_loss:
+      enabled: true
+      trailing_stop: 0.15      # 移动止损15%
+      profit_target: 0.50      # 止盈目标50%
+      time_stop_days: 180      # 时间止损（天）
+
+# ==================== 风险管理配置 ====================
+risk_management:
+  # 单品种风险
+  position:
+    max_position_pct: 0.5      # 单品种最大仓位
+    max_daily_loss_pct: 0.03   # 单日最大亏损
+    max_drawdown_pct: 0.20     # 最大回撤
+    
+  # 组合风险
+  portfolio:
+    max_leverage: 1.0          # 最大杠杆
+    concentration_limit: 0.5    # 集中度限制
+    correlation_threshold: 0.7  # 相关性阈值
+    
+  # 风险计算
+  metrics:
+    var_confidence: 0.95       # VaR置信度
+    var_period: 252            # VaR计算周期（天）
+    volatility_window: 30      # 波动率计算窗口
+
+# ==================== 警报系统配置 ====================
+alerts:
+  # 警报开关
+  enabled: true
+  
+  # 价格警报
+  price:
+    enabled: true
+    change_threshold: 0.05     # 5%变动触发警报
+    
+  # 技术指标警报
+  technical:
+    enabled: true
+    rsi_overbought: 70
+    rsi_oversold: 30
+    macd_cross: true           # MACD金叉死叉
+    
+  # 风险警报
+  risk:
+    enabled: true
+    drawdown_threshold: 0.10   # 10%回撤
+    volatility_spike: 2.0      # 波动率异常倍数
+    
+  # 通知方式
+  notification:
+    methods: ["console", "file"]  # console, file, email, telegram
+    log_path: "./data/alerts.log"
+    # email:
+    #   smtp_server: "smtp.gmail.com"
+    #   smtp_port: 587
+    #   sender: ""
+    #   recipients: []
+    # telegram:
+    #   bot_token: ""
+    #   chat_id: ""
+
+# ==================== 回测配置 ====================
+backtest:
+  enabled: true
+  start_date: "2020-01-01"
+  end_date: null               # null表示当前日期
+  initial_capital: 100000      # 初始资金
+  commission: 0.0003           # 手续费率
+  slippage: 0.001              # 滑点
+
+# ==================== Web界面配置 ====================
+web:
+  # Streamlit配置
+  host: "localhost"
+  port: 8501
+  theme: "light"               # light, dark
+  
+  # 页面配置
+  pages:
+    overview: true
+    analysis: true
+    signals: true
+    risk: true
+    settings: true
+    
+  # 刷新配置
+  auto_refresh:
+    enabled: true
+    interval: 300              # 自动刷新间隔（秒）
+
+# ==================== 定时任务配置 ====================
+scheduler:
+  enabled: true
+  
+  tasks:
+    # 数据更新任务
+    - name: "update_market_data"
+      enabled: true
+      schedule: "*/15 * * * *"  # Cron表达式：每15分钟
+      
+    # 信号计算任务
+    - name: "calculate_signals"
+      enabled: true
+      schedule: "0 */1 * * *"   # 每小时
+      
+    # 风险监控任务
+    - name: "risk_monitoring"
+      enabled: true
+      schedule: "*/30 * * * *"  # 每30分钟
+      
+    # 日报生成任务
+    - name: "daily_report"
+      enabled: true
+      schedule: "0 18 * * *"    # 每天18:00
+      
+    # 数据库备份任务
+    - name: "database_backup"
+      enabled: true
+      schedule: "0 2 * * *"     # 每天02:00
+
+# ==================== 高级配置 ====================
+advanced:
+  # 并发处理
+  concurrency:
+    max_workers: 4             # 最大工作线程数
+    
+  # 性能优化
+  performance:
+    enable_numba: false        # 使用Numba加速
+    enable_multiprocessing: false
+    
+  # 调试模式
+  debug:
+    enabled: false
+    save_raw_data: false
+    verbose_logging: false
