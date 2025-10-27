@@ -38,6 +38,6 @@ Write-Host "http://localhost:8503" -ForegroundColor Cyan
 Write-Host " 按 Ctrl+C 停止服务" -ForegroundColor White
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`n" -ForegroundColor Blue
 
-streamlit run main.py --server.port=8503 --server.headless=true
+streamlit run Home.py --server.port=8503 --server.headless=true
 
 Read-Host "`n按回车键退出"

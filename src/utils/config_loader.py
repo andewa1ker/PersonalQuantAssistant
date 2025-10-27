@@ -60,7 +60,7 @@ class ConfigManager:
         try:
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 self._config = yaml.safe_load(f)
-            print(f"✓ 配置文件加载成功: {self.config_path}")
+            # print(f"✓ 配置文件加载成功: {self.config_path}")
         except FileNotFoundError:
             raise FileNotFoundError(f"配置文件不存在: {self.config_path}")
         except yaml.YAMLError as e:
@@ -72,9 +72,9 @@ class ConfigManager:
             if self.api_keys_path.exists():
                 with open(self.api_keys_path, 'r', encoding='utf-8') as f:
                     self._api_keys = yaml.safe_load(f)
-                print(f"✓ API密钥文件加载成功: {self.api_keys_path}")
+                # print(f"✓ API密钥文件加载成功: {self.api_keys_path}")
             else:
-                print(f"⚠ API密钥文件不存在，使用默认配置: {self.api_keys_path}")
+                # print(f"⚠ API密钥文件不存在，使用默认配置: {self.api_keys_path}")
                 self._api_keys = {}
         except yaml.YAMLError as e:
             raise ValueError(f"API密钥文件格式错误: {e}")

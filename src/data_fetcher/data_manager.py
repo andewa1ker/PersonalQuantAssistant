@@ -110,15 +110,9 @@ class DataManager:
                 start_date = (datetime.now() - timedelta(days=365)).strftime('%Y%m%d')
             
             return self.etf_fetcher.get_history_data(symbol, start_date, end_date)
-        if data_type == 'realtime':
-            return self.stock_fetcher.get_realtime_price(symbol)
-        elif data_type == 'history':
-            period = kwargs.get('period', '1y')
-            start_date = kwargs.get('start_date')
-            end_date = kwargs.get('end_date')
-            return self.stock_fetcher.get_history_data(symbol, start_date, end_date, period)
         elif data_type == 'valuation':
-            return self.stock_fetcher.get_valuation_data(symbol)
+            # ETF估值数据
+            return self.etf_fetcher.get_realtime_price(symbol)
         else:
             log.error(f"不支持的数据类型: {data_type}")
             return None

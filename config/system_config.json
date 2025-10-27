@@ -1,0 +1,51 @@
+{
+  "user": {
+    "username": "量化投资者",
+    "email": "user@example.com",
+    "risk_preference": "平衡",
+    "created_at": "2025-10-27T08:09:11.655706"
+  },
+  "trading": {
+    "max_position_per_asset": 0.3,
+    "max_daily_trades": 10,
+    "auto_rebalance": true,
+    "rebalance_threshold": 0.05,
+    "default_stop_loss": 0.05,
+    "default_take_profit": 0.15
+  },
+  "data_sources": {
+    "coingecko": {
+      "enabled": true,
+      "priority": 1
+    },
+    "tushare": {
+      "enabled": true,
+      "priority": 2,
+      "token": ""
+    },
+    "akshare": {
+      "enabled": true,
+      "priority": 3
+    }
+  },
+  "notifications": {
+    "price_alert": true,
+    "signal_alert": true,
+    "risk_alert": true,
+    "daily_summary": false,
+    "email": false,
+    "wechat": false
+  },
+  "ui": {
+    "theme": "auto",
+    "language": "zh_CN",
+    "default_chart_days": 30
+  },
+  "advanced": {
+    "cache_enabled": true,
+    "cache_ttl": 300,
+    "api_timeout": 10,
+    "log_level": "INFO"
+  },
+  "updated_at": "2025-10-27T08:09:20.322887"
+}

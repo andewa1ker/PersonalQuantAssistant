@@ -67,7 +67,7 @@ def line_area_chart(dates: list, values: list, title: str = '', color: str = Non
         height=350,
     )
     
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': False})
+    st.plotly_chart(fig, config={'displayModeBar': False})
 
 def tx_list(items: list):
     """交易列表"""
@@ -95,7 +95,6 @@ def data_table(df: pd.DataFrame, zebra: bool = True, compact: bool = True):
     """数据表格"""
     st.dataframe(
         df,
-        use_container_width=True,
         hide_index=True,
         height=None if not compact else 400,
     )

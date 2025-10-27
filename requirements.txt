@@ -6,6 +6,7 @@ streamlit-lottie>=0.0.5         # Lottie动画支持
 
 # ===== AI功能 =====
 openai>=1.0.0                   # OpenAI API
+jieba>=0.42.1                   # 中文分词（NLP情感分析）
 
 # ===== 数据获取 =====
 yfinance>=0.2.32                # 美股和全球市场数据

@@ -1,0 +1,39 @@
+{
+  "strategies": [
+    {
+      "id": "momentum_btc_1",
+      "name": "BTC动量突破策略",
+      "type": "crypto_momentum",
+      "status": "running",
+      "asset": "BTC",
+      "params": {
+        "short_window": 5,
+        "long_window": 20,
+        "threshold": 0.02
+      },
+      "risk": {
+        "stop_loss": 0.05,
+        "position_limit": 0.3
+      },
+      "created_at": "2025-10-27T08:08:43.632947",
+      "updated_at": "2025-10-27T08:08:43.632947"
+    },
+    {
+      "id": "dca_eth_1",
+      "name": "ETH定投策略",
+      "type": "dca",
+      "status": "running",
+      "asset": "ETH",
+      "params": {
+        "investment_amount": 1000,
+        "frequency": "weekly"
+      },
+      "risk": {
+        "stop_loss": 0.15,
+        "position_limit": 0.25
+      },
+      "created_at": "2025-10-27T08:08:43.632947",
+      "updated_at": "2025-10-27T08:08:43.632947"
+    }
+  ]
+}

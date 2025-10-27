@@ -11,21 +11,21 @@ from datetime import datetime, timedelta
 src_path = Path(__file__).parent / "src"
 sys.path.insert(0, str(src_path))
 
-from src.utils.config_loader import get_config
-from src.data_fetcher.data_manager import DataManager
-from src.analysis.signal_generator import SignalGenerator
-from src.utils.cache_helper import (
+from utils.config_loader import get_config
+from data_fetcher.data_manager import DataManager
+from analysis.signal_generator import SignalGenerator
+from utils.cache_helper import (
     init_session_state, 
     show_cache_manager, 
     show_performance_metrics,
     preload_common_data
 )
 # 导入现代化UI组件
-from src.ui.modern_theme import ModernTheme
-from src.ui.modern_components import ModernComponents
+from ui.modern_theme import ModernTheme
+from ui.modern_components import ModernComponents
 
 # 导入AI助手
-from src.ai.ai_assistant import AIAssistant, init_ai_assistant, show_ai_chat_interface
+from ai.ai_assistant import AIAssistant, init_ai_assistant, show_ai_chat_interface
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -166,7 +166,7 @@ def main():
     # 根据选择显示不同页面(匹配新图标)
     if MinimalIcons.get('dashboard') in page or "投资仪表板" in page:
         # Apple级别仪表板
-        from src.ui.apple_dashboard import show_apple_dashboard
+        from dashboard_apple import show_apple_dashboard
         show_apple_dashboard(data_manager, signal_gen)
     elif MinimalIcons.get('ai') in page or "AI投资顾问" in page:
         # 初始化AI助手

@@ -24,4 +24,4 @@ Write-Host "浏览器将自动打开 http://localhost:8501" -ForegroundColor Cya
 Write-Host "按 Ctrl+C 停止应用" -ForegroundColor Cyan
 Write-Host ""
 
-streamlit run main.py
+streamlit run Home.py
